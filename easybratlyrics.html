@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brat Left-Justified Generator</title>
+<style>
+body{
+  background:#fff;
+  font-family: Arial, sans-serif;
+  padding:20px;
+}
+h1{
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-size:14px;
+  text-align:center;
+  letter-spacing:1px;
+  margin-bottom:15px;
+}
+textarea{
+  width:100%;
+  height:80px;
+  font-size:16px;
+  padding:10px;
+}
+button{
+  margin-top:10px;
+  padding:10px 15px;
+  font-size:15px;
+}
+.controls{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+canvas{
+  width:70%;
+  display:block;
+  margin:20px auto;
+  border:1px solid #ddd;
+}
+</style>
+</head>
+<body>
+
+<h1>BRAT Left-Justified Cumulative Generator</h1>
+
+<textarea id="textInput" placeholder="Write your sentence..."></textarea>
+
+<div class="controls">
+  <label>Background: <input type="color" id="bgColor" value="#ffffff"></label>
+  <label>Text: <input type="color" id="textColor" value="#000000"></label>
+</div>
+
+<button onclick="generate()">Generate</button>
+
+<div id="output"></div>
+
+<script>
+function generate(){
+  const text = document.getElementById("textInput").value.trim();
+  if(!text) return;
+
+  const bgColor = document.getElementById("bgColor").value;
+  const textColor = document.getElementById("textColor").value;
+  const words = text.split(/\s+/);
+
+  const output = document.getElementById("output");
+  output.innerHTML = "";
+
+  let cumulative = [];
+
+  words.forEach((word,index)=>{
+    cumulative.push(word);
+    const lineText = cumulative.join(" ");
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 1080;
+    canvas.height = 1350;
+
+    // background
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // font
+    let fontSize = 180;
+    ctx.fillStyle = textColor;
+    ctx.textBaseline = "top";
+    ctx.font = "normal " + fontSize + "px Arial Narrow, Arial, sans-serif";
+
+    // wrap lines left justified
+    const maxWidth = canvas.width - 100; // left padding 100px
+    let wordsArr = lineText.split(" ");
+    let lines = [];
+    let tempLine = [];
+
+    wordsArr.forEach(w=>{
+      const testLine = tempLine.concat([w]).join(" ");
+      if(ctx.measureText(testLine).width > maxWidth){
+        if(tempLine.length) lines.push(tempLine);
+        tempLine = [w];
+      } else tempLine.push(w);
+    });
+    if(tempLine.length) lines.push(tempLine);
+
+    const lineGap = fontSize * 1.4;
+    const totalHeight = lines.length * lineGap;
+    const startY = (canvas.height - totalHeight)/2;
+
+    // draw lines with left-justify
+    lines.forEach((lnArr,i)=>{
+      let x = 100; // left margin
+      let y = startY + i*lineGap;
+
+      if(lnArr.length>1){
+        const wordsWidth = lnArr.reduce((sum,w)=>sum+ctx.measureText(w).width,0);
+        const gap = (maxWidth - wordsWidth)/(lnArr.length-1);
+        lnArr.forEach(w=>{
+          ctx.fillText(w,x,y);
+          x += ctx.measureText(w).width + gap;
+        });
+      } else {
+        ctx.fillText(lnArr[0], x, y);
+      }
+    });
+
+    // output card + download
+    const card = document.createElement("div");
+    card.appendChild(canvas);
+
+    const btn = document.createElement("button");
+    btn.innerText = "Download";
+    btn.onclick = ()=>{
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = `line_${index+1}.png`;
+      a.click();
+    };
+    card.appendChild(btn);
+
+    output.appendChild(card);
+  });
+}
+</script>
+</body>
+</html>
