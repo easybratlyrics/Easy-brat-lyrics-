@@ -15,7 +15,7 @@ body{
 
 h1{
   text-align:center;
-  font-family: "Arial Narrow", Arial, sans-serif;
+  font-family:"Arial Narrow", Arial, sans-serif;
   font-size:14px;
   letter-spacing:1px;
   margin-bottom:15px;
@@ -89,21 +89,27 @@ function generate(){
     canvas.width = 1080;
     canvas.height = 1350;
 
-    // background
+    /* background */
     ctx.fillStyle = bg;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // text setup
+    /* text settings */
     const fontSize = 180;
-    const lineHeight = fontSize * 1.25;
+    const lineHeight = fontSize * 1.03; // tight but safe
     const paddingLeft = 100;
     const maxWidth = canvas.width - paddingLeft - 100;
 
     ctx.fillStyle = color;
-    ctx.font = fontSize + "px Arial Narrow, Arial, sans-serif";
+    ctx.font = fontSize + "px 'Arialnarrow normal', Arialnarrow, sans-serif"; // ❌ no bold
     ctx.textBaseline = "top";
 
-    // wrap words
+    /* subtle softness */
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
+    /* wrap logic */
     const allWords = content.split(" ");
     let lines = [];
     let current = [];
@@ -120,15 +126,15 @@ function generate(){
     if(current.length) lines.push(current);
 
     const totalHeight = lines.length * lineHeight;
-    let y = (canvas.height - totalHeight)/2;
+    let y = (canvas.height - totalHeight) / 2;
 
-    // draw justified lines (LEFT START)
+    /* draw LEFT-JUSTIFIED + JUSTIFIED */
     lines.forEach(line=>{
       let x = paddingLeft;
 
       if(line.length > 1){
-        const wordsWidth = line.reduce((s,w)=>s+ctx.measureText(w).width,0);
-        const gap = (maxWidth - wordsWidth)/(line.length-1);
+        const wordsWidth = line.reduce((s,w)=>s + ctx.measureText(w).width,0);
+        const gap = (maxWidth - wordsWidth) / (line.length - 1);
 
         line.forEach(w=>{
           ctx.fillText(w,x,y);
@@ -137,10 +143,11 @@ function generate(){
       } else {
         ctx.fillText(line[0], x, y);
       }
+
       y += lineHeight;
     });
 
-    // card
+    /* output */
     const wrap = document.createElement("div");
     wrap.appendChild(canvas);
 
