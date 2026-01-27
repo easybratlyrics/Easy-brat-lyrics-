@@ -3,53 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brat Left-Justified Generator</title>
+<title>Brat Lyrics Generator</title>
+
 <style>
 body{
-  background:#fff;
-  font-family: Arial, sans-serif;
+  margin:0;
   padding:20px;
+  background:#ffffff;
+  font-family: Arial, sans-serif;
 }
+
 h1{
+  text-align:center;
   font-family: "Arial Narrow", Arial, sans-serif;
   font-size:14px;
-  text-align:center;
   letter-spacing:1px;
   margin-bottom:15px;
 }
+
 textarea{
   width:100%;
   height:80px;
   font-size:16px;
   padding:10px;
+  box-sizing:border-box;
 }
-button{
-  margin-top:10px;
-  padding:10px 15px;
-  font-size:15px;
-}
+
 .controls{
   display:flex;
   gap:10px;
   margin-top:10px;
 }
+
+button{
+  margin-top:10px;
+  padding:10px 15px;
+  font-size:15px;
+}
+
 canvas{
-  width:70%;
+  width:65%;
   display:block;
-  margin:20px auto;
+  margin:25px auto;
   border:1px solid #ddd;
 }
 </style>
 </head>
+
 <body>
 
-<h1>BRAT Left-Justified Cumulative Generator</h1>
+<h1>WRITE ENTIRE SENTENCE AND GET EVERY SINGLE LYRICS</h1>
 
-<textarea id="textInput" placeholder="Write your sentence..."></textarea>
+<textarea id="textInput" placeholder="Type your sentence..."></textarea>
 
 <div class="controls">
-  <label>Background: <input type="color" id="bgColor" value="#ffffff"></label>
-  <label>Text: <input type="color" id="textColor" value="#000000"></label>
+  <label>Background <input type="color" id="bgColor" value="#ffffff"></label>
+  <label>Text <input type="color" id="textColor" value="#000000"></label>
 </div>
 
 <button onclick="generate()">Generate</button>
@@ -61,8 +70,8 @@ function generate(){
   const text = document.getElementById("textInput").value.trim();
   if(!text) return;
 
-  const bgColor = document.getElementById("bgColor").value;
-  const textColor = document.getElementById("textColor").value;
+  const bg = document.getElementById("bgColor").value;
+  const color = document.getElementById("textColor").value;
   const words = text.split(/\s+/);
 
   const output = document.getElementById("output");
@@ -72,76 +81,83 @@ function generate(){
 
   words.forEach((word,index)=>{
     cumulative.push(word);
-    const lineText = cumulative.join(" ");
+    const content = cumulative.join(" ");
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
+
     canvas.width = 1080;
     canvas.height = 1350;
 
     // background
-    ctx.fillStyle = bgColor;
+    ctx.fillStyle = bg;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    // font
-    let fontSize = 180;
-    ctx.fillStyle = textColor;
+    // text setup
+    const fontSize = 180;
+    const lineHeight = fontSize * 1.25;
+    const paddingLeft = 100;
+    const maxWidth = canvas.width - paddingLeft - 100;
+
+    ctx.fillStyle = color;
+    ctx.font = fontSize + "px Arial Narrow, Arial, sans-serif";
     ctx.textBaseline = "top";
-    ctx.font = "normal " + fontSize + "px Arial Narrow, Arial, sans-serif";
 
-    // wrap lines left justified
-    const maxWidth = canvas.width - 100; // left padding 100px
-    let wordsArr = lineText.split(" ");
+    // wrap words
+    const allWords = content.split(" ");
     let lines = [];
-    let tempLine = [];
+    let current = [];
 
-    wordsArr.forEach(w=>{
-      const testLine = tempLine.concat([w]).join(" ");
-      if(ctx.measureText(testLine).width > maxWidth){
-        if(tempLine.length) lines.push(tempLine);
-        tempLine = [w];
-      } else tempLine.push(w);
+    allWords.forEach(w=>{
+      const test = current.concat(w).join(" ");
+      if(ctx.measureText(test).width > maxWidth){
+        lines.push(current);
+        current = [w];
+      } else {
+        current.push(w);
+      }
     });
-    if(tempLine.length) lines.push(tempLine);
+    if(current.length) lines.push(current);
 
-    const lineGap = fontSize * 1.4;
-    const totalHeight = lines.length * lineGap;
-    const startY = (canvas.height - totalHeight)/2;
+    const totalHeight = lines.length * lineHeight;
+    let y = (canvas.height - totalHeight)/2;
 
-    // draw lines with left-justify
-    lines.forEach((lnArr,i)=>{
-      let x = 100; // left margin
-      let y = startY + i*lineGap;
+    // draw justified lines (LEFT START)
+    lines.forEach(line=>{
+      let x = paddingLeft;
 
-      if(lnArr.length>1){
-        const wordsWidth = lnArr.reduce((sum,w)=>sum+ctx.measureText(w).width,0);
-        const gap = (maxWidth - wordsWidth)/(lnArr.length-1);
-        lnArr.forEach(w=>{
+      if(line.length > 1){
+        const wordsWidth = line.reduce((s,w)=>s+ctx.measureText(w).width,0);
+        const gap = (maxWidth - wordsWidth)/(line.length-1);
+
+        line.forEach(w=>{
           ctx.fillText(w,x,y);
           x += ctx.measureText(w).width + gap;
         });
       } else {
-        ctx.fillText(lnArr[0], x, y);
+        ctx.fillText(line[0], x, y);
       }
+      y += lineHeight;
     });
 
-    // output card + download
-    const card = document.createElement("div");
-    card.appendChild(canvas);
+    // card
+    const wrap = document.createElement("div");
+    wrap.appendChild(canvas);
 
     const btn = document.createElement("button");
     btn.innerText = "Download";
     btn.onclick = ()=>{
       const a = document.createElement("a");
       a.href = canvas.toDataURL("image/png");
-      a.download = `line_${index+1}.png`;
+      a.download = "brat_" + (index+1) + ".png";
       a.click();
     };
-    card.appendChild(btn);
 
-    output.appendChild(card);
+    wrap.appendChild(btn);
+    output.appendChild(wrap);
   });
 }
 </script>
+
 </body>
 </html>
