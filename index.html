@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Brat Lyrics Generator</title>
+
+<meta name="description" content="Easy Brat Lyrics Generator is a free online tool to create brat-style lyrics images word by word. Generate, preview, and download instantly.">
 
 <style>
 body{
@@ -39,6 +42,7 @@ button{
   margin-top:10px;
   padding:10px 15px;
   font-size:15px;
+  cursor:pointer;
 }
 
 canvas{
@@ -46,6 +50,25 @@ canvas{
   display:block;
   margin:25px auto;
   border:1px solid #ddd;
+}
+
+footer{
+  margin-top:40px;
+  padding-top:15px;
+  border-top:1px solid #eee;
+  text-align:center;
+  font-size:13px;
+  color:#555;
+}
+
+footer a{
+  color:#555;
+  text-decoration:none;
+  margin:0 8px;
+}
+
+footer a:hover{
+  text-decoration:underline;
 }
 </style>
 </head>
@@ -64,6 +87,12 @@ canvas{
 <button onclick="generate()">Generate</button>
 
 <div id="output"></div>
+
+<footer>
+  <a href="about.html">About</a> |
+  <a href="privacy-policy.html">Privacy Policy</a> |
+  <a href="contact.html">Contact</a>
+</footer>
 
 <script>
 function generate(){
@@ -89,27 +118,18 @@ function generate(){
     canvas.width = 1080;
     canvas.height = 1350;
 
-    /* background */
     ctx.fillStyle = bg;
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    /* text settings */
     const fontSize = 180;
-    const lineHeight = fontSize * 1.03; // tight but safe
+    const lineHeight = fontSize * 1.03;
     const paddingLeft = 100;
     const maxWidth = canvas.width - paddingLeft - 100;
 
     ctx.fillStyle = color;
-    ctx.font = fontSize + "px 'Arialnarrow normal', Arialnarrow, sans-serif"; // ❌ no bold
+    ctx.font = fontSize + "px 'Arial Narrow', Arial, sans-serif";
     ctx.textBaseline = "top";
 
-    /* subtle softness */
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 0;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-
-    /* wrap logic */
     const allWords = content.split(" ");
     let lines = [];
     let current = [];
@@ -128,7 +148,6 @@ function generate(){
     const totalHeight = lines.length * lineHeight;
     let y = (canvas.height - totalHeight) / 2;
 
-    /* draw LEFT-JUSTIFIED + JUSTIFIED */
     lines.forEach(line=>{
       let x = paddingLeft;
 
@@ -147,7 +166,6 @@ function generate(){
       y += lineHeight;
     });
 
-    /* output */
     const wrap = document.createElement("div");
     wrap.appendChild(canvas);
 
