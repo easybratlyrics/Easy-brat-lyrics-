@@ -82,6 +82,7 @@ button {
 .squareBox span {
     display: inline-block;
     transform: scaleY(1.25);
+    width: 100%;
 }
 
 footer {
@@ -135,7 +136,7 @@ footer a:hover {
 function generateImages() {
 
     const input = document.getElementById("lyricsInput").value.trim();
-    const words = input.split(/\s+/);
+    if (!input) return;
 
     const container = document.getElementById("imagesContainer");
     container.innerHTML = "";
@@ -143,20 +144,37 @@ function generateImages() {
     const textColor = document.getElementById("textColor").value;
     const bgColor = document.getElementById("bgColor").value;
 
-    let cumulative = [];
+    // Respect manual line breaks
+    const paragraphs = input.split("\n");
+    const allWords = input.split(/\s+/);
 
-    for (let i = 0; i < words.length; i++) {
+    for (let step = 0; step < allWords.length; step++) {
 
-        cumulative.push(words[i]);
-
-        // Format into 3 words per line
         let formatted = "";
-        for (let j = 0; j < cumulative.length; j++) {
-            formatted += cumulative[j] + " ";
-            if ((j + 1) % 3 === 0) {
-                formatted += "\n";
+        let wordCounter = 0;
+        let totalWordsUsed = 0;
+
+        paragraphs.forEach(para => {
+
+            const wordsInPara = para.trim().split(/\s+/);
+            let localCount = 0;
+
+            for (let i = 0; i < wordsInPara.length; i++) {
+
+                if (totalWordsUsed > step) break;
+
+                formatted += wordsInPara[i] + " ";
+                localCount++;
+                totalWordsUsed++;
+
+                // 3 words per line default
+                if (localCount % 3 === 0) {
+                    formatted += "\n";
+                }
             }
-        }
+
+            formatted += "\n";
+        });
 
         const block = document.createElement("div");
         block.className = "imageBlock";
@@ -174,7 +192,7 @@ function generateImages() {
         downloadBtn.onclick = function() {
             html2canvas(box).then(canvas => {
                 const link = document.createElement("a");
-                link.download = "lyrics_step_" + (i+1) + ".png";
+                link.download = "lyrics_step_" + (step+1) + ".png";
                 link.href = canvas.toDataURL("image/png");
                 link.click();
             });
