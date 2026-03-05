@@ -5,204 +5,241 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Easy Brat Lyrics</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background: #ffffff;
+
+body{
+margin:0;
+font-family:'Roboto',sans-serif;
+background:#ffffff;
 }
 
-.container {
-    max-width: 1000px;
-    margin: auto;
-    padding: 30px;
+.container{
+max-width:1000px;
+margin:auto;
+padding:30px;
 }
 
-h2 {
-    text-align: center;
+h2{
+text-align:center;
 }
 
-textarea {
-    width: 100%;
-    height: 120px;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 20px;
+textarea{
+width:100%;
+height:120px;
+padding:10px;
+font-size:16px;
+margin-bottom:20px;
 }
 
-.controls {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-    justify-content: center;
+.controls{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+margin-bottom:30px;
+justify-content:center;
 }
 
-button {
-    padding: 8px 16px;
-    cursor: pointer;
-    border: none;
-    background: black;
-    color: white;
+button{
+padding:8px 16px;
+cursor:pointer;
+border:none;
+background:black;
+color:white;
 }
 
-.imagesContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 30px;
-    justify-content: center;
+.imagesContainer{
+display:flex;
+flex-wrap:wrap;
+gap:30px;
+justify-content:center;
 }
 
-.imageBlock {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.imageBlock{
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
-.squareBox {
-    width: 400px;
-    height: 400px;
-    padding: 30px;
-    box-sizing: border-box;
-    font-size: 26px;
-    font-weight: 500;
-    line-height: 1.2;
-    white-space: pre-line;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: #ffffff;
-    color: #000000;
+.squareBox{
+
+width:400px;
+height:400px;
+
+padding:30px;
+box-sizing:border-box;
+
+font-size:75px;
+font-weight:400;
+line-height:1.05;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:#ffffff;
+color:#000000;
+
+filter:blur(2px);
+
+overflow:hidden;
+
 }
 
-.squareBox span {
-    display: inline-block;
-    transform: scaleY(1.25);
-    width: 100%;
+.squareBox span{
+
+width:100%;
+display:block;
+
+transform:scaleY(1.25);
+
+white-space:pre-wrap;
+
+word-break:normal;
+overflow-wrap:break-word;
+
 }
 
-footer {
-    margin-top: 60px;
-    padding: 20px;
-    text-align: center;
-    background: #f2f2f2;
+footer{
+margin-top:60px;
+padding:20px;
+text-align:center;
+background:#f2f2f2;
 }
 
-footer a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: black;
+footer a{
+margin:0 15px;
+text-decoration:none;
+color:black;
 }
 
-footer a:hover {
-    text-decoration: underline;
+footer a:hover{
+text-decoration:underline;
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="container">
-    <h2>Easy Brat Lyrics</h2>
 
-    <textarea id="lyricsInput" placeholder="Paste full lyrics here..."></textarea>
+<h2>"Puri 1 Line Likh De Bruh Automatic Generate Kaedega Separately"</h2>
 
-    <div class="controls">
-        <label>Text Color:
-            <input type="color" id="textColor" value="#000000">
-        </label>
+<textarea id="lyricsInput" placeholder="Paste full lyrics here..."></textarea>
 
-        <label>Background:
-            <input type="color" id="bgColor" value="#ffffff">
-        </label>
+<div class="controls">
 
-        <button onclick="generateImages()">Generate</button>
-    </div>
+<label>
+Text Color
+<input type="color" id="textColor" value="#000000">
+</label>
 
-    <div id="imagesContainer" class="imagesContainer"></div>
+<label>
+Background
+<input type="color" id="bgColor" value="#ffffff">
+</label>
+
+<label>
+Alignment
+<select id="alignSelect">
+<option value="justify">Justify</option>
+<option value="center">Center</option>
+<option value="left">Left</option>
+<option value="right">Right</option>
+</select>
+</label>
+
+<button onclick="generateImages()">Generate</button>
+
+</div>
+
+<div id="imagesContainer" class="imagesContainer"></div>
+
 </div>
 
 <footer>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="privacy-policy.html">Privacy Policy</a>
+
+<a href="about.html">About</a>
+<a href="contact.html">Contact</a>
+<a href="privacy-policy.html">Privacy Policy</a>
+
 </footer>
 
 <script>
-function generateImages() {
 
-    const input = document.getElementById("lyricsInput").value.trim();
-    if (!input) return;
+function generateImages(){
 
-    const container = document.getElementById("imagesContainer");
-    container.innerHTML = "";
+const input=document.getElementById("lyricsInput").value;
 
-    const textColor = document.getElementById("textColor").value;
-    const bgColor = document.getElementById("bgColor").value;
+if(!input.trim()) return;
 
-    // Respect manual line breaks
-    const paragraphs = input.split("\n");
-    const allWords = input.split(/\s+/);
+const textColor=document.getElementById("textColor").value;
+const bgColor=document.getElementById("bgColor").value;
+const align=document.getElementById("alignSelect").value;
 
-    for (let step = 0; step < allWords.length; step++) {
+const container=document.getElementById("imagesContainer");
+container.innerHTML="";
 
-        let formatted = "";
-        let wordCounter = 0;
-        let totalWordsUsed = 0;
+const words=input.split(/\s+/);
 
-        paragraphs.forEach(para => {
+for(let step=0;step<words.length;step++){
 
-            const wordsInPara = para.trim().split(/\s+/);
-            let localCount = 0;
+let current=words.slice(0,step+1).join(" ");
 
-            for (let i = 0; i < wordsInPara.length; i++) {
+const block=document.createElement("div");
+block.className="imageBlock";
 
-                if (totalWordsUsed > step) break;
+const box=document.createElement("div");
+box.className="squareBox";
 
-                formatted += wordsInPara[i] + " ";
-                localCount++;
-                totalWordsUsed++;
+box.style.backgroundColor=bgColor;
+box.style.color=textColor;
 
-                // 3 words per line default
-                if (localCount % 3 === 0) {
-                    formatted += "\n";
-                }
-            }
+const span=document.createElement("span");
 
-            formatted += "\n";
-        });
+if(align==="justify"){
 
-        const block = document.createElement("div");
-        block.className = "imageBlock";
+span.style.textAlign="justify";
+span.style.textAlignLast="left";
 
-        const box = document.createElement("div");
-        box.className = "squareBox";
-        box.style.backgroundColor = bgColor;
-        box.style.color = textColor;
+}else{
 
-        box.innerHTML = "<span>" + formatted.trim() + "</span>";
+span.style.textAlign=align;
 
-        const downloadBtn = document.createElement("button");
-        downloadBtn.innerText = "Download Image";
-
-        downloadBtn.onclick = function() {
-            html2canvas(box).then(canvas => {
-                const link = document.createElement("a");
-                link.download = "lyrics_step_" + (step+1) + ".png";
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-            });
-        };
-
-        block.appendChild(box);
-        block.appendChild(downloadBtn);
-        container.appendChild(block);
-    }
 }
+
+span.innerText=current;
+
+box.appendChild(span);
+
+const downloadBtn=document.createElement("button");
+downloadBtn.innerText="Download Image";
+
+downloadBtn.onclick=function(){
+
+html2canvas(box).then(canvas=>{
+
+const link=document.createElement("a");
+link.download="lyrics_"+(step+1)+".png";
+link.href=canvas.toDataURL();
+link.click();
+
+});
+
+};
+
+block.appendChild(box);
+block.appendChild(downloadBtn);
+
+container.appendChild(block);
+
+}
+
+}
+
 </script>
 
 </body>
