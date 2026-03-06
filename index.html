@@ -76,7 +76,7 @@ align-items:center;
 justify-content:center;
 background:#ffffff;
 color:#000000;
-filter:blur(2px);
+filter:blur(1.5px);
 overflow:hidden;
 }
 
@@ -226,11 +226,24 @@ downloadBtn.innerText="Download Image";
 
 downloadBtn.onclick=function(){
 
-html2canvas(box).then(canvas=>{
+const spanElement = box.querySelector("span");
+
+/* temporarily move blur to text so html2canvas captures it */
+const originalBlur = box.style.filter;
+box.style.filter = "none";
+spanElement.style.filter = "blur(1.5px)";
+
+html2canvas(box,{scale:2}).then(canvas=>{
+
 const link=document.createElement("a");
 link.download="lyrics_"+(step+1)+".png";
 link.href=canvas.toDataURL();
 link.click();
+
+/* restore preview blur */
+box.style.filter = originalBlur;
+spanElement.style.filter = "";
+
 });
 
 };
