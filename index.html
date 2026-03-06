@@ -64,42 +64,29 @@ align-items:center;
 }
 
 .squareBox{
-
 width:400px;
 height:400px;
-
 padding:30px;
 box-sizing:border-box;
-
 font-size:75px;
 font-weight:400;
 line-height:1.05;
-
 display:flex;
 align-items:center;
 justify-content:center;
-
 background:#ffffff;
 color:#000000;
-
-filter:blur(2px);
-
+filter:blur(1.5px);
 overflow:hidden;
-
 }
 
 .squareBox span{
-
 width:100%;
 display:block;
-
 transform:scaleY(1.25);
-
 white-space:pre-wrap;
-
 word-break:normal;
 overflow-wrap:break-word;
-
 }
 
 footer{
@@ -126,7 +113,7 @@ text-decoration:underline;
 
 <div class="container">
 
-<h2>"Puri 1 Line Likh De Bruh Automatic Generate Kaedega Separately"</h2>
+<h2>"Puri 1 Line Likh De Bruh Automatic Generate Kardega Separately"</h2>
 
 <textarea id="lyricsInput" placeholder="Paste full lyrics here..."></textarea>
 
@@ -152,6 +139,11 @@ Alignment
 </select>
 </label>
 
+<label>
+Text Size: <span id="sizeValue">75</span>px
+<input type="range" id="textSize" min="30" max="120" step="5" value="75" oninput="updateSizeValue()">
+</label>
+
 <button onclick="generateImages()">Generate</button>
 
 </div>
@@ -161,24 +153,40 @@ Alignment
 </div>
 
 <footer>
-
 <a href="about.html">About</a>
 <a href="contact.html">Contact</a>
 <a href="privacy-policy.html">Privacy Policy</a>
-
 </footer>
 
 <script>
 
+function updateSizeValue(){
+const slider=document.getElementById("textSize");
+const output=document.getElementById("sizeValue");
+output.innerText=slider.value;
+}
+
+function autoFitText(box,span,maxSize){
+
+let size=maxSize;
+span.style.fontSize=size+"px";
+
+while((span.scrollHeight>box.clientHeight || span.scrollWidth>box.clientWidth) && size>10){
+size=size-2;
+span.style.fontSize=size+"px";
+}
+
+}
+
 function generateImages(){
 
 const input=document.getElementById("lyricsInput").value;
-
 if(!input.trim()) return;
 
 const textColor=document.getElementById("textColor").value;
 const bgColor=document.getElementById("bgColor").value;
 const align=document.getElementById("alignSelect").value;
+const textSize=parseInt(document.getElementById("textSize").value);
 
 const container=document.getElementById("imagesContainer");
 container.innerHTML="";
@@ -201,19 +209,17 @@ box.style.color=textColor;
 const span=document.createElement("span");
 
 if(align==="justify"){
-
 span.style.textAlign="justify";
 span.style.textAlignLast="left";
-
 }else{
-
 span.style.textAlign=align;
-
 }
 
 span.innerText=current;
 
 box.appendChild(span);
+
+autoFitText(box,span,textSize);
 
 const downloadBtn=document.createElement("button");
 downloadBtn.innerText="Download Image";
@@ -221,12 +227,10 @@ downloadBtn.innerText="Download Image";
 downloadBtn.onclick=function(){
 
 html2canvas(box).then(canvas=>{
-
 const link=document.createElement("a");
 link.download="lyrics_"+(step+1)+".png";
 link.href=canvas.toDataURL();
 link.click();
-
 });
 
 };
@@ -239,6 +243,8 @@ container.appendChild(block);
 }
 
 }
+
+updateSizeValue();
 
 </script>
 
