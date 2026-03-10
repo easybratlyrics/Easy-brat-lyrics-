@@ -141,7 +141,7 @@ Alignment
 
 <label>
 Text Size: <span id="sizeValue">75</span>px
-<input type="range" id="textSize" min="30" max="120" step="5" value="75" oninput="updateSizeValue()">
+<input type="range" id="textSize" min="10" max="120" step="5" value="75" oninput="updateSizeValue()">
 </label>
 
 <button onclick="generateImages()">Generate</button>
@@ -239,10 +239,6 @@ const link=document.createElement("a");
 link.download="lyrics_"+(step+1)+".png";
 link.href=canvas.toDataURL();
 link.click();
-
-/* restore preview blur */
-box.style.filter = originalBlur;
-spanElement.style.filter = "";
 
 });
 
