@@ -76,7 +76,7 @@ align-items:center;
 justify-content:center;
 background:#ffffff;
 color:#000000;
-filter:blur(1.5px);
+filter:blur(0px);
 overflow:hidden;
 }
 
@@ -231,7 +231,7 @@ const spanElement = box.querySelector("span");
 /* temporarily move blur to text so html2canvas captures it */
 const originalBlur = box.style.filter;
 box.style.filter = "none";
-spanElement.style.filter = "blur(1.5px)";
+spanElement.style.filter = "blur(0px)";
 
 html2canvas(box,{scale:2}).then(canvas=>{
 
